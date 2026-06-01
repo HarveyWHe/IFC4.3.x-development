@@ -153,14 +153,11 @@ function setupInheritanceToggle() {
 }
 
 function setupMathJax() {
-    window.MathJax = {
-        loader: {
-            load: ['output/svg']
-        },
-        startup: {
-            output: 'svg',
-        },
-    };
+    window.MathJax = window.MathJax || {};
+    window.MathJax.loader = window.MathJax.loader || {};
+    window.MathJax.loader.load = window.MathJax.loader.load || ['output/svg'];
+    window.MathJax.startup = window.MathJax.startup || {};
+    window.MathJax.startup.output = window.MathJax.startup.output || 'svg';
 }
 
 function setupHighlightJS() {
