@@ -511,7 +511,7 @@ def process_graphviz(current_entity, md):
         hash = hashlib.sha256(c.encode("utf-8")).hexdigest()
         fn = os.path.join("svgs", current_entity + "_" + hash + ".dot")
         c2 = transform_graph(current_entity, c, only_urls=is_figure(c) == 2)
-        with open(fn, "w") as f:
+        with open(fn, "w", encoding="utf-8") as f:
             f.write(c2)
         if is_markdown:
             md = md.replace("```%s```" % c, "![dot_diagram](/svgs/%s_%s.svg)" % (current_entity, hash))
@@ -717,7 +717,7 @@ def process_graphviz_concept(name, md):
 
         c3 = G.to_string()
 
-        with open(fn, "w") as f:
+        with open(fn, "w", encoding="utf-8") as f:
             f.write(c3)
         md = md.replace("```%s```" % c, "![](/svgs/%s_%s.svg)" % (name, hash))
 
@@ -921,7 +921,7 @@ def process_markdown(resource, mdc, process_quotes=True, number_headings=False, 
     for img in soup.findAll("img"):
         if img["src"].endswith(".svg"):
             entity, hash = img["src"].split("/")[-1].split(".")[0].split("_")
-            svg = BeautifulSoup(open(os.path.join("svgs", entity + "_" + hash + ".dot.svg")))
+            svg = BeautifulSoup(open(os.path.join("svgs", entity + "_" + hash + ".dot.svg"), encoding="utf-8"))
             img.replaceWith(svg.find("svg"))
             img = svg
         elif img["src"].startswith("http"):
@@ -1195,7 +1195,8 @@ def get_properties(resource, mdc):
             doc = process_markdown(
                 resource,
                 open(
-                    os.path.join(REPO_DIR, "docs/properties/%s/%s.md") % (prop["name"][0].lower(), prop["name"])
+                    os.path.join(REPO_DIR, "docs/properties/%s/%s.md") % (prop["name"][0].lower(), prop["name"]),
+                    encoding="utf-8",
                 ).read(),
             )
         except:
@@ -1801,7 +1802,7 @@ def create_concept_table(view_name, xmi_concept, types=None):
 @app.route(make_url("concepts/content.html"))
 def concept_list():
     fn = os.path.join(REPO_DIR, "docs", "templates", "README.md")
-    html = process_markdown("", open(fn).read())
+    html = process_markdown("", open(fn, encoding="utf-8").read())
     return render_template(
         "concept_listing.html",
         navigation=get_navigation(),
@@ -1843,7 +1844,7 @@ def concept(s=""):
     diagram = None
 
     if os.path.exists(fn):
-        md = open(fn).read()
+        md = open(fn, encoding="utf-8").read()
 
         if "concept {" in md:
             diagram = process_graphviz_concept("".join(c for c in s if c.isalnum()), md[md.index("```"):])
@@ -1903,7 +1904,7 @@ def chapter(n):
     fn = os.path.join(md_root, cat, "README.md")
 
     if os.path.exists(fn):
-        html = markdown.markdown(open(fn).read())
+        html = markdown.markdown(open(fn, encoding="utf-8").read())
         soup = BeautifulSoup(html)
         # First h1 is handled by the template
         soup.find("h1").decompose()
@@ -2015,7 +2016,7 @@ def annex_a():
 
 @app.route(make_url("annex-a-express.html"))
 def annex_a_express():
-    return render_template("annex-a-express.html", navigation=get_navigation(), express=open("IFC.exp").read(), link=f"{SCHEMA_NAME}.exp", body_class='annex')
+    return render_template("annex-a-express.html", navigation=get_navigation(), express=open("IFC.exp", encoding="utf-8").read(), link=f"{SCHEMA_NAME}.exp", body_class='annex')
 
 
 @app.route(make_url("annex-a-xsd.html"))
@@ -2088,7 +2089,7 @@ def toc():
 def annex_c():
     entities = []
     indentation_map = {0: entities}
-    with open("inheritance_listing.txt") as inheritance_listings:
+    with open("inheritance_listing.txt", encoding="utf-8") as inheritance_listings:
         for line in inheritance_listings:
             line = line.strip("\n")
             padding = line.count(" ")
@@ -2182,7 +2183,7 @@ def annex_f():
     # html = ""
     _, __, ___, html = get_content_html("changelog", require_number=False)
 
-    with open("changes_by_schema.json") as f:
+    with open("changes_by_schema.json", encoding="utf-8") as f:
         changelog_data = json.load(f)
         changelog = {"sections": []}
         SectionNumberGenerator.begin_subsection()
@@ -2294,7 +2295,7 @@ def schema(name):
     definition = None
     if os.path.exists(fn):
         definition_number = SectionNumberGenerator.generate()
-        definition = process_markdown("", open(fn).read())
+        definition = process_markdown("", open(fn, encoding="utf-8").read())
 
     order = ["Types", "Entities", "Property Sets", "Quantity Sets", "Functions", "Rules", "PropertyEnumerations"]
     categories = [
@@ -2635,7 +2636,7 @@ if redis:
     @app.route("/build_index", methods=["GET", "POST"])
     def build_index():
         for x in "references,figures,tables".split(","):
-            with open(f"listing_{x}.json", "w") as f:
+            with open(f"listing_{x}.json", "w", encoding="utf-8") as f:
                 json.dump(
                     [
                         {"number": p[1], "url": p[2], "title": p[0]}
