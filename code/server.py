@@ -919,18 +919,26 @@ def process_markdown(resource, mdc, process_quotes=True, number_headings=False, 
 
     # Change svg img references to embedded svg because otherwise URLS are not interactive
     for img in soup.findAll("img"):
+        handled = False
         if img["src"].endswith(".svg"):
             entity, hash = img["src"].split("/")[-1].split(".")[0].split("_")
-            svg = BeautifulSoup(open(os.path.join("svgs", entity + "_" + hash + ".dot.svg"), encoding="utf-8"))
-            img.replaceWith(svg.find("svg"))
-            img = svg
-        elif img["src"].startswith("http"):
-            pass
-        else:
-            if img["src"] and img["src"].startswith("../../figures/examples/"):
-                img["src"] = url_for('get_example_figure', fig=img["src"].replace("../../figures/examples/", ""))
+            try:
+                svg = BeautifulSoup(open(os.path.join("svgs", entity + "_" + hash + ".dot.svg"), encoding="utf-8"))
+                img.replaceWith(svg.find("svg"))
+                img = svg
+                handled = True
+            except FileNotFoundError:
+                # There are now also .svg figure references from markdown,
+                # these do not need to be embedded for link interactivity.
+                pass
+        if not handled:
+            if img["src"].startswith("http"):
+                pass
             else:
-                img["src"] = img["src"][9:]
+                if img["src"] and img["src"].startswith("../../figures/examples/"):
+                    img["src"] = url_for('get_example_figure', fig=img["src"].replace("../../figures/examples/", ""))
+                else:
+                    img["src"] = img["src"][9:]
 
     if number_headings:
         assert chapter
