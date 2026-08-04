@@ -1,4 +1,4 @@
-BreakerUnitFuseBreakingingCurve
+BreakerUnitFuseBreakingCurve
 ===============================
 
 A curve that establishes the let through breaking energy of a breaker unit when a particular prospective breaking current is applied.  Note that the breaker unit fuse breaking curve is defined within a Cartesian coordinate system and this fact must be:
