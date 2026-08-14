@@ -1,4 +1,5 @@
 # PEnum_HoseNozzleType
+<!-- end of short definition -->
 
 ## Items
 

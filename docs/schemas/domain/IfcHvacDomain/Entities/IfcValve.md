@@ -1,8 +1,9 @@
 # IfcValve
 
 A valve is used in a building services piping distribution system to control or modulate the flow of the fluid.
+<!-- end of short definition -->
 
-> HISTORY  New entity in IFC4
+> HISTORY New entity in IFC4
 
 { .note}
 >

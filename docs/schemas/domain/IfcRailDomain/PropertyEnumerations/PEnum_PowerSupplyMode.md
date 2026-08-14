@@ -1,4 +1,5 @@
 # PEnum_PowerSupplyMode
+<!-- end of short definition -->
 
 ## Items
 

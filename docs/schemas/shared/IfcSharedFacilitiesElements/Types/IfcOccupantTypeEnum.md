@@ -1,8 +1,9 @@
 # IfcOccupantTypeEnum
 
 _IfcOccupantTypeEnum_ defines the types of occupant from which the type required can be selected.
+<!-- end of short definition -->
 
-> HISTORY  New enumeration in IFC2.0.
+> HISTORY New enumeration in IFC2.0.
 
 ## Items
 
@@ -25,7 +26,7 @@ Actor participating in a property agreement on behalf of an owner, lessor or ass
 Actor that owns a property.
 
 ### TENANT
-Actor renting the use of a property fro a period of time.
+Actor renting the use of a property for a period of time.
 
 ### USERDEFINED
 User-defined type.

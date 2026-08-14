@@ -1,4 +1,5 @@
 # PEnum_UnitConnectionType
+<!-- end of short definition -->
 
 ## Items
 

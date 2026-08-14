@@ -1,4 +1,5 @@
 # PEnum_ReinforcementBarAllocationType
+<!-- end of short definition -->
 
 ## Items
 

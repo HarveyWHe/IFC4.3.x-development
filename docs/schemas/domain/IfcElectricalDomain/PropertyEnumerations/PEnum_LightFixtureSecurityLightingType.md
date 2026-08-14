@@ -1,4 +1,5 @@
 # PEnum_LightFixtureSecurityLightingType
+<!-- end of short definition -->
 
 ## Items
 

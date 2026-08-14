@@ -1,4 +1,5 @@
 # PEnum_EndShapeType
+<!-- end of short definition -->
 
 ## Items
 

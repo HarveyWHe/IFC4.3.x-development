@@ -1,4 +1,5 @@
 # PEnum_DamperOrientation
+<!-- end of short definition -->
 
 ## Items
 

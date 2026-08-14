@@ -1,8 +1,9 @@
 # IfcSwitchingDeviceTypeEnum
 
 The _IfcSwitchingDeviceTypeEnum_ defines the range of different types of switch that can be specified.
+<!-- end of short definition -->
 
-> HISTORY  New type in IFC2x2.
+> HISTORY New type in IFC2x2.
 
 ## Items
 

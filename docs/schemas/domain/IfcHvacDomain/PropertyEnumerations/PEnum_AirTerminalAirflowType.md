@@ -1,4 +1,5 @@
 # PEnum_AirTerminalAirflowType
+<!-- end of short definition -->
 
 ## Items
 

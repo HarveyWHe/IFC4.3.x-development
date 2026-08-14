@@ -1,4 +1,5 @@
 # PEnum_HoseReelMountingType
+<!-- end of short definition -->
 
 ## Items
 

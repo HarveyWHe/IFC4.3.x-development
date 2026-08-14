@@ -1,4 +1,5 @@
 # PEnum_FurniturePanelType
+<!-- end of short definition -->
 
 ## Items
 

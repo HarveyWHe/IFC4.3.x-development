@@ -1,8 +1,9 @@
 # IfcBuildingElementPartType
 
 The building element part type defines lists of commonly shared property set definitions and representation maps of parts of a building element.
+<!-- end of short definition -->
 
-> HISTORY  New entity in IFC4.
+> HISTORY New entity in IFC4.
 
 ## Attributes
 

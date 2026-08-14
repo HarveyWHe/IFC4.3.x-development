@@ -1,4 +1,5 @@
 # PEnum_JunctionBoxMountingType
+<!-- end of short definition -->
 
 ## Items
 

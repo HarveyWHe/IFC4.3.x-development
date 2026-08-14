@@ -1,4 +1,5 @@
 # PEnum_CooledBeamActiveAirFlowConfigurationType
+<!-- end of short definition -->
 
 ## Items
 

@@ -1,6 +1,5 @@
 # PEnum_ElementStatus
-
-<<todo: definition="">></todo:>
+<!-- end of short definition -->
 
 ## Items
 
@@ -20,7 +19,7 @@ element will exist only temporarily (such as a temporary support structure)
 required category not on scale
 
 ### NOTKNOWN
-Value is unkown
+Value is unknown
 
 ### UNSET
 Value has not been specified

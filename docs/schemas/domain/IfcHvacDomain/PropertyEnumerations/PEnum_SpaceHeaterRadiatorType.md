@@ -1,4 +1,5 @@
 # PEnum_SpaceHeaterRadiatorType
+<!-- end of short definition -->
 
 ## Items
 

@@ -1,4 +1,5 @@
 # PEnum_JunctionBoxPlacingType
+<!-- end of short definition -->
 
 ## Items
 

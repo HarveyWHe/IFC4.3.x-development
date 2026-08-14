@@ -1,4 +1,5 @@
 # PEnum_ControllerMultiPositionType
+<!-- end of short definition -->
 
 ## Items
 

@@ -1,4 +1,5 @@
 # PEnum_ShowerType
+<!-- end of short definition -->
 
 ## Items
 

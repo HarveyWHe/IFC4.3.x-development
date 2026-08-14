@@ -1,4 +1,5 @@
 # PEnum_MotorEnclosureType
+<!-- end of short definition -->
 
 ## Items
 

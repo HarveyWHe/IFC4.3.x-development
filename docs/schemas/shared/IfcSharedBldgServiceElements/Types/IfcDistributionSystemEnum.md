@@ -1,8 +1,9 @@
 # IfcDistributionSystemEnum
 
 This enumeration identifies different types of distribution systems. It is used to designate systems by their function as well as ports of devices within such systems to restrict connectivity to compatible connections.
+<!-- end of short definition -->
 
-> HISTORY  New enumeration in IFC4.
+> HISTORY New enumeration in IFC4.
 
 Ports for cable carriers may be connected using _IfcCableCarrierSegment_ and _IfcCableCarrierFitting_. Type objects for cable carrier segments and fittings (_IfcCableCarrierSegmentType_ and _IfcCableCarrierFittingType_ that are not specific to a particular system type may have ports with _PredefinedType_ of NOTDEFINED which indicates that occurrences of such objects may connect to ports of any other cable-carrier based port. Valid enumerations for cable carriers are the same as that for cables, and may be asserted if ports of the contained cables are all of the same type.
 
@@ -153,7 +154,7 @@ A system that allows communications between operators (e.g. switchtender, traffi
 Mobile network insures wireless communication by providing a secure platform for voice and data communication between infrastructure operators, including drivers, dispatchers, shunting team members and station controllers.
 
 ### MONITORINGSYSTEM
-Sensor-based system for building and infastructure environmental monitoring and control.
+Sensor-based system for building and infrastructure environmental monitoring and control.
 
 ### USERDEFINED
 

@@ -1,4 +1,5 @@
 # PEnum_CoolingTowerSprayType
+<!-- end of short definition -->
 
 ## Items
 

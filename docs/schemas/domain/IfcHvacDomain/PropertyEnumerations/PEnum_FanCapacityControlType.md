@@ -1,4 +1,5 @@
 # PEnum_FanCapacityControlType
+<!-- end of short definition -->
 
 ## Items
 

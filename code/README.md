@@ -432,7 +432,7 @@ To load example files, you can clone the sample files into a directory called
 ```bash
 $ cd /path/to/IFC4.3.x-development
 $ cd ..
-$ git clone https://github.com/buildingSMART/Sample-Test-Files.git examples
+$ git clone https://github.com/buildingSMART/IFC4.3.x-sample-models examples
 ```
 
 You can now visit `http://127.0.0.1:5000/` to see the running website.
@@ -447,7 +447,7 @@ Prior to publishing, enable ISO mode by setting `is_iso = True` in `server.py`.
 One option of publishing is by using `wget`:
 
 ```
-$ wget -r -l inf -E -k -p -H -Draw.githubusercontent.com,unpkg.com,polyfill.io,cdn.jsdelivr.net,cdnjs.cloudflare.com,i.creativecommons.org,localhost http://localhost:5000
+$ wget -r -l inf -E -k -p http://localhost:5000
 ```
 
 The options used are:
@@ -457,48 +457,17 @@ The options used are:
  * -E adjust extension, to enforce ".html" extension
  * -k convert links, to ensure links are relative and work offline
  * -p page requisites, downloads assets such as inline images and stylesheets
- * -H span hosts, to allow downloading assets outside localhost
- * -D comma separated lists of hosts where content may exist
 
 It takes a while to run, so for testing you may limit the recursion depth by
 setting `-l 2` or another low number.
 
-Afterwards, run the following procedures to change the directory structure and add the necessary mathjax plugins.
+Runtime browser dependencies are vendored in `docs/assets/vendor`, including
+MathJax's transitive SVG and CHTML assets, so no external CDN directories need
+to be moved into the generated snapshot.
+
+With the PACKAGE option:
 
 ~~~
-mkdir -p localhost/lib
-mv cdn.jsdelivr.net cdnjs.cloudflare.com i.creativecommons.org polyfill.io raw.githubusercontent.com unpkg.com localhost/lib
-find . -type f \( -name '*.html' -o -name '*.htm' \) \
-    -exec sed s,../cdn.jsdelivr.net,lib/cdn.jsdelivr.net,g -i {} \; \
-    -exec sed s,../cdnjs.cloudflare.com,lib/cdnjs.cloudflare.com,g -i  {} \; \
-    -exec sed s,../i.creativecommons.org,lib/i.creativecommons.org,g -i  {} \; \
-    -exec sed s,../polyfill.io,lib/polyfill.io,g -i  {} \; \
-    -exec sed s,../raw.githubusercontent.com,lib/raw.githubusercontent.com,g -i  {} \; \
-    -exec sed s,../unpkg.com,lib/unpkg.com,g -i  {} \;
-mkdir -p localhost/lib/cdn.jsdelivr.net/npm/mathjax\@3/es5/output/svg/fonts
-mkdir -p localhost/lib/cdn.jsdelivr.net/npm/mathjax\@3/es5/output/chtml/fonts/woff-v2/
-cd localhost/lib/cdn.jsdelivr.net/npm/mathjax\@3/es5/output/
-wget https://cdn.jsdelivr.net/npm/mathjax\@3.2.0/es5/output/svg.js
-cd svg/fonts
-wget https://cdn.jsdelivr.net/npm/mathjax\@3.2.0/es5/output/svg/fonts/tex.js
-cd ../../chtml/fonts/woff-v2/
-wget https://cdn.jsdelivr.net/npm/mathjax\@3.2.0/es5/output/chtml/fonts/woff-v2/MathJax_Zero.woff
-wget https://cdn.jsdelivr.net/npm/mathjax\@3.2.0/es5/output/chtml/fonts/woff-v2/MathJax_Math-Italic.woff
-wget https://cdn.jsdelivr.net/npm/mathjax\@3.2.0/es5/output/chtml/fonts/woff-v2/MathJax_Main-Regular.woff
-wget https://cdn.jsdelivr.net/npm/mathjax\@3.2.0/es5/output/chtml/fonts/woff-v2/MathJax_Size2-Regular.woff
-~~~
-
-or with PACKAGE option:
-
-~~~
-find . -type f \( -name '*.html' -o -name '*.htm' \) \
-    -exec sed s,cdn.jsdelivr.net,lib/cdn.jsdelivr.net,g -i {} \; \
-    -exec sed s,cdnjs.cloudflare.com,lib/cdnjs.cloudflare.com,g -i  {} \; \
-    -exec sed s,i.creativecommons.org,lib/i.creativecommons.org,g -i  {} \; \
-    -exec sed s,polyfill.io,lib/polyfill.io,g -i  {} \; \
-    -exec sed s,raw.githubusercontent.com,lib/raw.githubusercontent.com,g -i  {} \; \
-    -exec sed s,unpkg.com,lib/unpkg.com,g -i  {} \;
-
 find . -type f \( -name '*.html' -o -name '*.htm' \) \
     -exec sed s,IFC/RELEASE/,RELEASE/,g -i {} \;
 ~~~

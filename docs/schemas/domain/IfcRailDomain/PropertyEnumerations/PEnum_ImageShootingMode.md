@@ -1,4 +1,5 @@
 # PEnum_ImageShootingMode
+<!-- end of short definition -->
 
 ## Items
 

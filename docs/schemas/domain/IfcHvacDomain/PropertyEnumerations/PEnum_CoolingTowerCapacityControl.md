@@ -1,4 +1,5 @@
 # PEnum_CoolingTowerCapacityControl
+<!-- end of short definition -->
 
 ## Items
 

@@ -1,4 +1,5 @@
 # PEnum_InsulatorType
+<!-- end of short definition -->
 
 ## Items
 

@@ -1,4 +1,5 @@
 # PEnum_ControllerTypeFloating
+<!-- end of short definition -->
 
 ## Items
 

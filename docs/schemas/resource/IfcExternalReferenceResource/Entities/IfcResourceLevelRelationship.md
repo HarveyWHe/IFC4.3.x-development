@@ -1,8 +1,9 @@
 # IfcResourceLevelRelationship
 
 _IfcResourceLevelRelationship_ is an abstract base entity for relationships between resource-level entities.
+<!-- end of short definition -->
 
-> HISTORY  New entity in IFC4.
+> HISTORY New entity in IFC4.
 
 ## Attributes
 

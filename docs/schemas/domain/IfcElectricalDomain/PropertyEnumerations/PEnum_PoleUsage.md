@@ -1,4 +1,5 @@
 # PEnum_PoleUsage
+<!-- end of short definition -->
 
 ## Items
 

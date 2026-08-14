@@ -1,4 +1,5 @@
 # PEnum_StructureIndicator
+<!-- end of short definition -->
 
 ## Items
 

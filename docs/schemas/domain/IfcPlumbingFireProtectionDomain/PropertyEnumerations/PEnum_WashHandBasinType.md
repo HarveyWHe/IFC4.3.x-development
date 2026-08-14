@@ -1,4 +1,5 @@
 # PEnum_WashHandBasinType
+<!-- end of short definition -->
 
 ## Items
 

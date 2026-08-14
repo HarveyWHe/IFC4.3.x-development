@@ -1,4 +1,5 @@
 # PEnum_AirTerminalMountingType
+<!-- end of short definition -->
 
 ## Items
 

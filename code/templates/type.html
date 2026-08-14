@@ -53,7 +53,7 @@
 <table>
 {% for row in formal_propositions["items"] %}
 <tr>
-<td>{{ row.name }}<td>{{ row.description }}<br><pre>{{ row.formal }}</pre>
+<td>{{ row.name }}<td>{{ row.description | safe }}<pre><code class="language-express hljs">{{ row.formal }}</code></pre>
 </tr>
 {% endfor %}
 </table>

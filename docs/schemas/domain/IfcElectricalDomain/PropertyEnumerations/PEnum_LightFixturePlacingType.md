@@ -1,4 +1,5 @@
 # PEnum_LightFixturePlacingType
+<!-- end of short definition -->
 
 ## Items
 

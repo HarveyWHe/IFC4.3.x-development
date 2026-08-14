@@ -1,8 +1,9 @@
 # IfcWindowTypeEnum
 
 This enumeration defines the different predefined types of windows that can further specify an _IfcWindow_ or _IfcWindowType_.
+<!-- end of short definition -->
 
-> HISTORY  New enumeration in IFC4.
+> HISTORY New enumeration in IFC4.
 
 ## Items
 
@@ -13,7 +14,7 @@ A standard window usually within a wall opening, as a window panel in a curtain 
 A window within a sloped building element, usually a roof slab.
 
 ### LIGHTDOME
-A special window that lies horizonally in a roof slab opening.
+A special window that lies horizontally in a roof slab opening.
 
 ### USERDEFINED
 User-defined window element.

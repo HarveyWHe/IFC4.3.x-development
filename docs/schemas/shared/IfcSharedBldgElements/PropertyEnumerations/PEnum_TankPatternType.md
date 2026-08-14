@@ -1,4 +1,5 @@
 # PEnum_TankPatternType
+<!-- end of short definition -->
 
 ## Items
 

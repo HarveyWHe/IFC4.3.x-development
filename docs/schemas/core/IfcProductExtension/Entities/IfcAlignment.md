@@ -1,6 +1,7 @@
 # IfcAlignment
 
 For the purposes of IFC the English term "alignment" defines three separate but closely interconnected concepts.
+<!-- end of short definition -->
 
 1. definition of a reference system for linear positioning
 2. safeguarding and optimization of the movement of vehicles - kinematic perspective
@@ -10,7 +11,7 @@ For the purposes of IFC the English term "alignment" defines three separate but 
 
 An alignment is used to define a reference system to position elements mainly for linear construction works, such as roads, rails, bridges, and others. The relative positioning along the alignment is defined by the linear referencing methodology.
 
-> NOTE  See ISO 19148 Geographic information &ndash; Linear referencing for general definitions about linear referencing.
+> NOTE See ISO 19148 Geographic information – Linear referencing for general definitions about linear referencing.
 
 **Kinematic perspective**
 
@@ -25,7 +26,7 @@ Supported shape representations of _IfcAlignment_ are:
 * _IfcCompositeCurve_ as a 2D horizontal alignment (represented by its horizontal alignment segments), without a vertical layout.
 * _IfcGradientCurve_ as a 3D horizontal and vertical alignment (represented by their alignment segments), without a cant layout.
 * _IfcSegmentedReferenceCurve_ as a 3D curve defined relative to an _IfcGradientCurve_ to incorporate the application of cant.
-* _IfcOffsetCurveByDistances_ as a 2D or 3D curve defined relative to an _IfcGradientCurve_ or another _IfcOffsetCurveByDistances_.
+* _IfcOffsetCurveByDistances_ as a 2D or 3D curve defined relative to an _IfcCompositeCurve_, _IfcGradientCurve_ or another _IfcOffsetCurveByDistances_.
 * _IfcPolyline_ or _IfcIndexedPolyCurve_ as a 3D alignment by a 3D polyline representation (such as coming from a survey).
 * _IfcPolyline_ or _IfcIndexedPolyCurve_ as a 2D horizontal alignment by a 2D polyline representation (such as in very early planning phases or as a map representation).
 
@@ -71,7 +72,7 @@ A mapping between the *business logic* and its *geometry definition* in IFC is d
 
 ### Alignment Layouts
 
-A single alignment may be described by one ore more of the following layouts:
+A single alignment may be described by one or more of the following layouts:
 
 * a horizontal layout (_IfcAlignmentHorizontal_), defined in the x/y plane of the engineering coordinate system.
 * an accompanying vertical layout (_IfcAlignmentVertical_), defined along the horizontal layout in the distance along / z coordinate space.
@@ -85,11 +86,11 @@ These 3 layouts may be used in different configurations. The most common are:
 4. Multiple Vertical layouts based on the same Horizontal Layout
 5. Multiple Vertical layouts based on the same Horizontal Layout, with a Cant layout applied
 
-(4) and (5) are used in scenarios where multiple alignments re-use the same horizontal layout definition. See **Alignment Layout - Reusing Horizontal Layout** and **Alignment Geometry - Reusing Horizontal Layout** for details on how to relate parent and child alignments in theses cases.
+(4) and (5) are used in scenarios where multiple alignments re-use the same horizontal layout definition. See **Alignment Layout - Reusing Horizontal Layout** and **Alignment Geometry - Reusing Horizontal Layout** for details on how to relate parent and child alignments in these cases.
 
 ![Alignment configurations](../../../../figures/IfcAlignment-possible-configurations.png)
 
-Figure ALCONFIG &mdash; Common configurations of alignment layouts
+Figure ALCONFIG — Common configurations of alignment layouts
 
 ### Alignment Layout - Horizontal, Vertical and Cant
 

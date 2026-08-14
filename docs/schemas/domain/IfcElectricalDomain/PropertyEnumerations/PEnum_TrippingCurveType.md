@@ -1,4 +1,5 @@
 # PEnum_TrippingCurveType
+<!-- end of short definition -->
 
 ## Items
 

@@ -1,4 +1,5 @@
 # PEnum_LRMType
+<!-- end of short definition -->
 
 ## Items
 

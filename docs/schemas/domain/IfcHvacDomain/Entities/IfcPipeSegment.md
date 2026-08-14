@@ -1,8 +1,9 @@
 # IfcPipeSegment
 
 A pipe segment is used to typically join two sections of a piping network.
+<!-- end of short definition -->
 
-> HISTORY  New entity in IFC4
+> HISTORY New entity in IFC4
 
 { .note}
 >

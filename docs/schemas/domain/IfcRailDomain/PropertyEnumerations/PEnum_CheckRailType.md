@@ -1,4 +1,5 @@
 # PEnum_CheckRailType
+<!-- end of short definition -->
 
 ## Items
 

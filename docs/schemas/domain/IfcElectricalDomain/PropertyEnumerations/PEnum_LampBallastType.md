@@ -1,4 +1,5 @@
 # PEnum_LampBallastType
+<!-- end of short definition -->
 
 ## Items
 

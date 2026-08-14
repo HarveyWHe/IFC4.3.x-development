@@ -1,4 +1,5 @@
 # PEnum_AudioVisualReceiverType
+<!-- end of short definition -->
 
 ## Items
 

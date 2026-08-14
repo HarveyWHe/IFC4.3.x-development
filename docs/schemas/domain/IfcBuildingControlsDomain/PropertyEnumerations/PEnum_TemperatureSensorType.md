@@ -1,4 +1,5 @@
 # PEnum_TemperatureSensorType
+<!-- end of short definition -->
 
 ## Items
 

@@ -1,4 +1,5 @@
 # PEnum_EarthFailureDeviceType
+<!-- end of short definition -->
 
 ## Items
 

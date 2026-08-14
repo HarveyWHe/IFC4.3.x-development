@@ -1,4 +1,5 @@
 # PEnum_FuseDisconnectorType
+<!-- end of short definition -->
 
 ## Items
 

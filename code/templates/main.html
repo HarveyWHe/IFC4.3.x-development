@@ -20,7 +20,13 @@
                     <p style='float: right; text-align: right'>International Organization for Standardization</p>
                     <p>ISO 16739-1:2023(E)</p>
                 {% else %}
-                    <p>{{ spec_version_string_full }} ({{ schema_version_string }})
+                    <img class="logo" src="{{ base }}/assets/vendor/buildingsmart/IFC4.3.x-development/IFC4x3-logo1.1-wide.png" width="100" style="
+                        display: inline-flex;
+                        padding-bottom: 0px;
+                        padding-top: 0px;
+                        float: left;
+                    ">
+                    <p style="display: inline-block; vertical-align: top;">{{ spec_version_string_full }} ({{ schema_version_string }})
                         {% if is_package %}
                             <small>official</small>
                         {% else %}
@@ -28,9 +34,28 @@
                         {% endif %}
                     </p>
                 {% endif %}
-
+                
                 {% if not is_iso %}
                 <ul>
+                    <li>
+                        <select id="language-selector"
+                                onchange="setLanguagePreference(this.value)"
+                                style="border: none; background: none; color: inherit;">
+
+                                <option value="{{ 'English (default)'|slugify }}"
+                                    {% if current_lang_slug == 'english-default' %}selected{% endif %}>
+                                {{ get_language_icon('English (default)') }} English (default)
+                        </option>
+
+                            {% for lang in languages if lang != "English (default)" %}
+                        {% set lang_slug = lang|slugify %}
+                    <option value="{{ lang_slug }}"
+                                {% if lang_slug == current_lang_slug %}selected{% endif %}>
+                        {{ get_language_icon(lang) }} {{ lang }}
+                        </option>
+                    {% endfor %}
+                    </select>
+                      </li>
                     <li>
                         {% if is_package %}
                             <a href="https://technical.buildingsmart.org/standards/ifc/ifc-schema-specifications/">
@@ -101,7 +126,7 @@
                 {% block pagecontent %}
                 {% endblock %}
             </div>
-            <div class="col-md-2">
+            <div class="col-md-2 rightpanel">
                 {% if not is_iso %}
                 {% if path %}
                 <div class="card fluid shadowed">
@@ -168,9 +193,9 @@
                     Copyright &copy; ISO 2023 &mdash; All rights reserved
                     </small>
                     {% else %}
-                    <a rel="license" href="http://creativecommons.org/licenses/by-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nd/4.0/88x31.png" /></a>
+                    <a rel="license" href="http://creativecommons.org/licenses/by-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="{{ base }}/assets/vendor/creativecommons/by-nd/4.0/88x31.png" /></a>
                     <small>
-                        Copyright &copy; 1996-2022 buildingSMART International Limited. Some rights reserved. Any technical documentation made available by buildingSMART International Limited is the copyrighted work of buildingSMART International Limited and is owned by buildingSMART International Limited. The Industry Foundation Classes are published under Creative Commons Attribution-NoDerivatives 4.0 International (CC BY-ND 4.0). Read the <a href="https://creativecommons.org/licenses/by-nd/4.0/legalcode">full license text here</a>. For more information please refer to our <a href="https://buildingsmart-1xbd3ajdayi.netdna-ssl.com/wp-content/uploads/2021/06/bSI-Intellectual-Property-Policy.pdf">IP Policy.</a>
+                        Copyright &copy; 1996-2025 buildingSMART International Limited. Some rights reserved. Any technical documentation made available by buildingSMART International Limited is the copyrighted work of buildingSMART International Limited and is owned by buildingSMART International Limited. The Industry Foundation Classes are published under Creative Commons Attribution-NoDerivatives 4.0 International (CC BY-ND 4.0). Read the <a href="https://creativecommons.org/licenses/by-nd/4.0/legalcode">full license text here</a>. For more information please refer to our <a href="https://app.box.com/s/rg081ahyq1euw8uw6efql6m2fcofm558">IP Policy.</a>
                     </small>
                     {% endif %}
                 </p>
@@ -185,12 +210,22 @@
             'repo': '{{ repo or "buildingSMART/IFC4.3.x-development" }}',
         };
     </script>
-    <script src="https://unpkg.com/feather-icons"></script>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/styles/default.min.css">
+    <script src="{{ base }}/assets/vendor/feather-icons/4.29.2/feather.min.js"></script>
+    <script src="{{ base }}/assets/vendor/polyfill-library/4.8.0/polyfill-es6.min.js"></script>
+    <script>
+        window.MathJax = {
+            loader: {
+                load: ['output/svg']
+            },
+            startup: {
+                output: 'svg',
+            },
+        };
+    </script>
+    <script id="MathJax-script" async src="{{ base }}/assets/vendor/mathjax/3.2.2/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="{{ base }}/assets/vendor/highlight.js/11.4.0/styles/default.min.css">
     <script src="{{ base }}/assets/js/highlight.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+    <script src="{{ base }}/assets/vendor/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
     <script type="text/javascript" src="{{ base }}/assets/js/app.js"></script>
 </body>
 </html>

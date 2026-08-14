@@ -1,8 +1,9 @@
 # IfcCompressorTypeEnum
 
 Enumeration defining the typical types of compressors.
+<!-- end of short definition -->
 
-> HISTORY  New enumeration in IFC2x.
+> HISTORY New enumeration in IFC2x.
 
 ## Items
 

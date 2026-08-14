@@ -1,4 +1,5 @@
 # PEnum_OverheadContactLineType
+<!-- end of short definition -->
 
 ## Items
 

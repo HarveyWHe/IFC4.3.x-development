@@ -1,3 +1,6 @@
 # Pset_CableFittingTypeCommon
 
-Common properties for cable fittings.  HISTORY: Added in IFC4.
+Common properties for cable fittings.
+<!-- end of short definition -->
+
+ HISTORY: Added in IFC4.

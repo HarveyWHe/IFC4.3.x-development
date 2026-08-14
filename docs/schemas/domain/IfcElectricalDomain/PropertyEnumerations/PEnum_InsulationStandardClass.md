@@ -1,4 +1,5 @@
 # PEnum_InsulationStandardClass
+<!-- end of short definition -->
 
 ## Items
 

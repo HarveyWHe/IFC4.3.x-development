@@ -1,11 +1,12 @@
 # IfcSensorTypeEnum
 
 The _IfcSensorTypeEnum_ defines the range of different types of sensor that can be specified.
+<!-- end of short definition -->
 
-> HISTORY  New enumeration in IFC2.0.
+> HISTORY New enumeration in IFC2.0.
 
 { .change-ifc2x4}
-> IFC4 CHANGE  Additional enumerations added.
+> IFC4 CHANGE Additional enumerations added.
 
 ## Items
 
@@ -64,7 +65,7 @@ A device that senses or detects acidity.
 A device that senses or detects pressure.
 
 ### RADIATIONSENSOR
-A device that senses or detects pressure.
+A device that senses or detects radiation.
 
 ### RADIOACTIVITYSENSOR
 A device that senses or detects atomic decay.

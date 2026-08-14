@@ -1,4 +1,5 @@
 # PEnum_DuctConnectionType
+<!-- end of short definition -->
 
 ## Items
 

@@ -1,4 +1,5 @@
 # PEnum_CoolingTowerCircuitType
+<!-- end of short definition -->
 
 ## Items
 

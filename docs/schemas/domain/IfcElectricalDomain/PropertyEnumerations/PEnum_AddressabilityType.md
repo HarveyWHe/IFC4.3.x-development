@@ -1,4 +1,5 @@
 # PEnum_AddressabilityType
+<!-- end of short definition -->
 
 ## Items
 

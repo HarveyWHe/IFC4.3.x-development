@@ -1,4 +1,5 @@
 # PEnum_RailwayCommunicationTerminalType
+<!-- end of short definition -->
 
 ## Items
 

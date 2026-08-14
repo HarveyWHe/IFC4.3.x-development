@@ -1,4 +1,5 @@
 # PEnum_ElectrificationType
+<!-- end of short definition -->
 
 ## Items
 

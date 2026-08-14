@@ -1,4 +1,5 @@
 # PEnum_DataCollectionType
+<!-- end of short definition -->
 
 ## Items
 

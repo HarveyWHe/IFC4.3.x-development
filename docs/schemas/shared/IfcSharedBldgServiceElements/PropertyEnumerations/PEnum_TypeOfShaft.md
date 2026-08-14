@@ -1,4 +1,5 @@
 # PEnum_TypeOfShaft
+<!-- end of short definition -->
 
 ## Items
 

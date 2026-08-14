@@ -1,4 +1,5 @@
 # PEnum_BuildingThermalExposure
+<!-- end of short definition -->
 
 ## Items
 

@@ -1,4 +1,5 @@
 # PEnum_CompressorTypePowerSource
+<!-- end of short definition -->
 
 ## Items
 

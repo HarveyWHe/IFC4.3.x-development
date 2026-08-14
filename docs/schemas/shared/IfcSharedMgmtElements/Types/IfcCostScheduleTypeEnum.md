@@ -1,8 +1,9 @@
 # IfcCostScheduleTypeEnum
 
 An _IfcCostScheduleTypeEnum_ is a list of the available types of cost schedule from which that required may be selected.
+<!-- end of short definition -->
 
-> HISTORY  New enumeration in IFC2x2.
+> HISTORY New enumeration in IFC2x2.
 
 ## Items
 

@@ -49,20 +49,29 @@ from flask import (
 import md as mdp
 from extract_concepts_from_xmi import parse_bindings
 
-app = Flask(__name__)
+import translate
+from slugify import slugify
 
-is_iso = os.environ.get('ISO', '0') == '1'
-is_package = os.environ.get('PACKAGE', '0') == '1'
+app = Flask(__name__)
+app.jinja_env.trim_blocks = True
+app.jinja_env.lstrip_blocks = True
+app.jinja_env.filters['slugify'] = slugify
+
+truthy = lambda s: (s or '').strip().lower() not in ('', '0', 'false', 'no', 'off')
+
+is_iso = truthy(os.environ.get('ISO'))
+is_package = truthy(os.environ.get('PACKAGE'))
 if is_package:
     base = "/HTML"
 else:
     base = "/IFC/RELEASE/IFC4x3/HTML"
 
-
+def get_language_icon(language = None):
+    default_lang = request.cookies.get("languagePreference", "English (default)")
+    return translate.build_language_flag_map().get(language or default_lang, "🇬🇧")
 
 def make_url(fragment=None):
     return base + "/" + fragment if fragment else "/"
-
 
 identity = lambda x: x
 
@@ -261,6 +270,19 @@ class toc_entry:
     children: list = None
     
     mvds: list = None
+
+    def find(self, lbl):
+        def traverse(te, path=None):
+            p = (path or []) + [te]
+            if te.text == lbl:
+                yield p
+            else:
+                for ch in (te.children or []):
+                    yield from traverse(ch, p)
+        li = list(traverse(self))
+        if li:
+            return li[0][-1]
+
 
 
 content_names = ["scope", "normative_references", "terms_and_definitions", "concepts"]
@@ -489,7 +511,7 @@ def process_graphviz(current_entity, md):
         hash = hashlib.sha256(c.encode("utf-8")).hexdigest()
         fn = os.path.join("svgs", current_entity + "_" + hash + ".dot")
         c2 = transform_graph(current_entity, c, only_urls=is_figure(c) == 2)
-        with open(fn, "w") as f:
+        with open(fn, "w", encoding="utf-8") as f:
             f.write(c2)
         if is_markdown:
             md = md.replace("```%s```" % c, "![dot_diagram](/svgs/%s_%s.svg)" % (current_entity, hash))
@@ -683,14 +705,19 @@ def process_graphviz_concept(name, md):
                 G.get_node(n)[0].set_shape("rect")
                 G.get_node(n)[0].set_style("filled")
             else:
-                G.add_node(pydot.Node(n, label=n.replace("_", " "), fillcolor="#aaffaa", shape="rect", style="filled"))
+                url = {}
+                label = n.replace("_", " ")
+                N = make_concept(["Partial Templates"], exclude_partial=False).find(label)
+                if N:
+                    url = {'URL': N.url}
+                G.add_node(pydot.Node(n, label=label, fillcolor="#aaffaa", shape="rect", style="filled", **url))
 
         # this is ugly, but the node defaults need to come before the edges
         G.obj_dict["nodes"]["node"][0]["sequence"] = -1
 
         c3 = G.to_string()
 
-        with open(fn, "w") as f:
+        with open(fn, "w", encoding="utf-8") as f:
             f.write(c3)
         md = md.replace("```%s```" % c, "![](/svgs/%s_%s.svg)" % (name, hash))
 
@@ -850,6 +877,7 @@ def api_resource(resource):
 
 @app.route(make_url("property/<prop>.htm"))
 def property(prop):
+    translations = translate.get_translations(prop)
     prop = "".join(c for c in prop if c.isalnum() or c in "_")
     md = os.path.join(REPO_DIR, "docs", "properties", prop[0].lower(), prop + ".md")
     try:
@@ -865,13 +893,14 @@ def property(prop):
     html = process_markdown(prop, mdc)
 
     html += tabulate.tabulate(psets, headers=["Referenced in"], tablefmt="html")
-
+    
     return render_template(
         "property.html",
         navigation=get_navigation(),
         content=html,
         number=idx,
         entity=prop,
+        translations=translations,
         path=md[len(REPO_DIR) + 1 :].replace("\\", "/"),
     )
 
@@ -890,18 +919,26 @@ def process_markdown(resource, mdc, process_quotes=True, number_headings=False, 
 
     # Change svg img references to embedded svg because otherwise URLS are not interactive
     for img in soup.findAll("img"):
+        handled = False
         if img["src"].endswith(".svg"):
             entity, hash = img["src"].split("/")[-1].split(".")[0].split("_")
-            svg = BeautifulSoup(open(os.path.join("svgs", entity + "_" + hash + ".dot.svg")))
-            img.replaceWith(svg.find("svg"))
-            img = svg
-        elif img["src"].startswith("http"):
-            pass
-        else:
-            if img["src"] and img["src"].startswith("../../figures/examples/"):
-                img["src"] = url_for('get_example_figure', fig=img["src"].replace("../../figures/examples/", ""))
+            try:
+                svg = BeautifulSoup(open(os.path.join("svgs", entity + "_" + hash + ".dot.svg"), encoding="utf-8"))
+                img.replaceWith(svg.find("svg"))
+                img = svg
+                handled = True
+            except FileNotFoundError:
+                # There are now also .svg figure references from markdown,
+                # these do not need to be embedded for link interactivity.
+                pass
+        if not handled:
+            if img["src"].startswith("http"):
+                pass
             else:
-                img["src"] = img["src"][9:]
+                if img["src"] and img["src"].startswith("../../figures/examples/"):
+                    img["src"] = url_for('get_example_figure', fig=img["src"].replace("../../figures/examples/", ""))
+                else:
+                    img["src"] = img["src"][9:]
 
     if number_headings:
         assert chapter
@@ -954,7 +991,22 @@ def process_markdown(resource, mdc, process_quotes=True, number_headings=False, 
                 continue
 
             has_aside = True
-            p.name = "aside"
+
+            css_class = keyword.lower()
+            if css_class == "ifc":
+                try:
+                    keyword_2 = p.text.split(" ", 2)[1].lower()
+                except:
+                    pass
+                if keyword_2 in ("addendum", "change"):
+                    css_class = "change"
+                elif keyword_2 in ("deprecation",):
+                    css_class = "deprecation"
+
+            new_p = soup.new_tag('aside', attrs={'class': [f"aside-{css_class}"]})
+            new_p.extend(p.contents)
+            p.replace_with(new_p)
+            p = new_p
 
             if process_quotes:
                 if keyword.startswith("IFC"):
@@ -966,14 +1018,6 @@ def process_markdown(resource, mdc, process_quotes=True, number_headings=False, 
                     keyword = "-".join((keyword, keyword2))
                 else:
                     p.contents = BeautifulSoup(str(p).replace(keyword, "")).html.body.aside.contents
-
-            css_class = keyword.lower()
-            if "addendum" in css_class or "change" in css_class:
-                css_class = "change"
-            if "deprecation" in css_class:
-                css_class = "deprecation"
-                
-            p["class"] = f"aside-{css_class}"
 
             mark = soup.new_tag("mark")
             mark.string = keyword
@@ -1000,6 +1044,7 @@ def process_markdown(resource, mdc, process_quotes=True, number_headings=False, 
 
 @app.route(make_url("lexical/<resource>.htm"))
 def resource(resource):
+    translations = translate.get_translations(resource)
     try:
         idx = name_to_number()[resource]
     except:
@@ -1033,7 +1078,8 @@ def resource(resource):
             if entity in ("IfcProduct", "IfcTypeProduct"):
                 is_product_or_type = True
                 break
-        return render_template(
+            
+        rendered_html = render_template(
             "entity.html",
             navigation=get_navigation(resource),
             number=idx,
@@ -1054,10 +1100,15 @@ def resource(resource):
             is_deprecated=resource in R.deprecated_entities,
             is_abstract=resource in R.abstract_entities,
             mvds=mvds,
-            is_product_or_type=is_product_or_type
+            is_product_or_type=is_product_or_type,
+            translations=translations,
+            get_language_icon=get_language_icon, 
         )
+        return rendered_html
+        
     elif resource in R.pset_definitions.keys():
-        return render_template(
+
+        rendered_html = render_template(
             "property.html",
             navigation=get_navigation(resource),
             content=get_definition(resource, mdc),
@@ -1068,17 +1119,23 @@ def resource(resource):
             applicability=get_applicability(resource),
             properties=get_properties(resource, mdc),
             changelog=get_changelog(resource),
+            translations=translations,
+            get_language_icon = get_language_icon, 
         )
+        return rendered_html
+    
     builder = resource_documentation_builder(resource)
+    content = get_definition(resource, mdc)
+    
     return render_template(
         "type.html",
         navigation=get_navigation(resource),
-        content=get_definition(resource, mdc),
+        content=content,
         number=idx,
         definition_number=definition_number,
         entity=resource,
         path=md[len(REPO_DIR) :].replace("\\", "/"),
-        type_values=get_type_values(resource, mdc),
+        type_values = get_type_values(resource, mdc),
         formal_propositions=get_formal_propositions(resource, builder),
         formal_representation=get_formal_representation(resource),
         references=get_references(resource),
@@ -1146,7 +1203,8 @@ def get_properties(resource, mdc):
             doc = process_markdown(
                 resource,
                 open(
-                    os.path.join(REPO_DIR, "docs/properties/%s/%s.md") % (prop["name"][0].lower(), prop["name"])
+                    os.path.join(REPO_DIR, "docs/properties/%s/%s.md") % (prop["name"][0].lower(), prop["name"]),
+                    encoding="utf-8",
                 ).read(),
             )
         except:
@@ -1752,7 +1810,7 @@ def create_concept_table(view_name, xmi_concept, types=None):
 @app.route(make_url("concepts/content.html"))
 def concept_list():
     fn = os.path.join(REPO_DIR, "docs", "templates", "README.md")
-    html = process_markdown("", open(fn).read())
+    html = process_markdown("", open(fn, encoding="utf-8").read())
     return render_template(
         "concept_listing.html",
         navigation=get_navigation(),
@@ -1794,7 +1852,7 @@ def concept(s=""):
     diagram = None
 
     if os.path.exists(fn):
-        md = open(fn).read()
+        md = open(fn, encoding="utf-8").read()
 
         if "concept {" in md:
             diagram = process_graphviz_concept("".join(c for c in s if c.isalnum()), md[md.index("```"):])
@@ -1854,7 +1912,7 @@ def chapter(n):
     fn = os.path.join(md_root, cat, "README.md")
 
     if os.path.exists(fn):
-        html = markdown.markdown(open(fn).read())
+        html = markdown.markdown(open(fn, encoding="utf-8").read())
         soup = BeautifulSoup(html)
         # First h1 is handled by the template
         soup.find("h1").decompose()
@@ -1966,7 +2024,7 @@ def annex_a():
 
 @app.route(make_url("annex-a-express.html"))
 def annex_a_express():
-    return render_template("annex-a-express.html", navigation=get_navigation(), express=open("IFC.exp").read(), link=f"{SCHEMA_NAME}.exp", body_class='annex')
+    return render_template("annex-a-express.html", navigation=get_navigation(), express=open("IFC.exp", encoding="utf-8").read(), link=f"{SCHEMA_NAME}.exp", body_class='annex')
 
 
 @app.route(make_url("annex-a-xsd.html"))
@@ -2039,7 +2097,7 @@ def toc():
 def annex_c():
     entities = []
     indentation_map = {0: entities}
-    with open("inheritance_listing.txt") as inheritance_listings:
+    with open("inheritance_listing.txt", encoding="utf-8") as inheritance_listings:
         for line in inheritance_listings:
             line = line.strip("\n")
             padding = line.count(" ")
@@ -2133,7 +2191,7 @@ def annex_f():
     # html = ""
     _, __, ___, html = get_content_html("changelog", require_number=False)
 
-    with open("changes_by_schema.json") as f:
+    with open("changes_by_schema.json", encoding="utf-8") as f:
         changelog_data = json.load(f)
         changelog = {"sections": []}
         SectionNumberGenerator.begin_subsection()
@@ -2199,7 +2257,6 @@ def annex_e_example_page(s):
         errors="ignore",
     ).read()
 
-    old_code = code
     code = re.sub(r"(?<=FILE_SCHEMA\(\(')IFC\w+", SCHEMA_NAME, code)
     code = re.sub(r"(?<=FILE_SCHEMA \(\(')IFC\w+", SCHEMA_NAME, code)
 
@@ -2246,7 +2303,7 @@ def schema(name):
     definition = None
     if os.path.exists(fn):
         definition_number = SectionNumberGenerator.generate()
-        definition = process_markdown("", open(fn).read())
+        definition = process_markdown("", open(fn, encoding="utf-8").read())
 
     order = ["Types", "Entities", "Property Sets", "Quantity Sets", "Functions", "Rules", "PropertyEnumerations"]
     categories = [
@@ -2567,6 +2624,7 @@ def get_index_index(kind):
 @app.context_processor
 def inject_variables():
     from version import schema_version_string, spec_version_string, spec_version_string_full
+    
     return {
         'base': base,
         'is_iso': X.is_iso,
@@ -2575,6 +2633,9 @@ def inject_variables():
         'spec_version_string': spec_version_string,
         'spec_version_string_full': spec_version_string_full,
         'branch': REPO_BRANCH,
+        'get_language_icon': translate.get_language_icon,  
+        'current_lang_slug': slugify(request.cookies.get('languagePreference', 'English (default)')),
+        'languages': translate.list_languages()
     }
 
 
@@ -2583,7 +2644,7 @@ if redis:
     @app.route("/build_index", methods=["GET", "POST"])
     def build_index():
         for x in "references,figures,tables".split(","):
-            with open(f"listing_{x}.json", "w") as f:
+            with open(f"listing_{x}.json", "w", encoding="utf-8") as f:
                 json.dump(
                     [
                         {"number": p[1], "url": p[2], "title": p[0]}

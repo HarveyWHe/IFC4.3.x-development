@@ -1,4 +1,5 @@
 # PEnum_ElementComponentDeliveryType
+<!-- end of short definition -->
 
 ## Items
 

@@ -1,4 +1,5 @@
 # PEnum_EarthquakeSensorType
+<!-- end of short definition -->
 
 ## Items
 

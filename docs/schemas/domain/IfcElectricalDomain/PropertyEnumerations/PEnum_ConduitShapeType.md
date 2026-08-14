@@ -1,4 +1,5 @@
 # PEnum_ConduitShapeType
+<!-- end of short definition -->
 
 ## Items
 

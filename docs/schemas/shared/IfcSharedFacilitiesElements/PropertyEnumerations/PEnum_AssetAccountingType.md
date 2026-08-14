@@ -1,4 +1,5 @@
 # PEnum_AssetAccountingType
+<!-- end of short definition -->
 
 ## Items
 

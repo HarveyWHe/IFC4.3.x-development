@@ -1,8 +1,9 @@
 # IfcTaskTypeEnum
 
 The _IfcTaskTypeEnum_ defines the range of different types of task that can be specified.
+<!-- end of short definition -->
 
-> HISTORY  New type in IFC4
+> HISTORY New type in IFC4
 
 ## Items
 

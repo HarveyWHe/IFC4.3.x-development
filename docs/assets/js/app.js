@@ -153,14 +153,11 @@ function setupInheritanceToggle() {
 }
 
 function setupMathJax() {
-    window.MathJax = {
-        loader: {
-            load: ['output/svg']
-        },
-        startup: {
-            output: 'svg',
-        },
-    };
+    window.MathJax = window.MathJax || {};
+    window.MathJax.loader = window.MathJax.loader || {};
+    window.MathJax.loader.load = window.MathJax.loader.load || ['output/svg'];
+    window.MathJax.startup = window.MathJax.startup || {};
+    window.MathJax.startup.output = window.MathJax.startup.output || 'svg';
 }
 
 function setupHighlightJS() {
@@ -207,7 +204,128 @@ function setupHighlightJS() {
     hljs.initLineNumbersOnLoad();
 }
 
+function setupConceptDiagramCanvas() {
+    let canvases = document.querySelectorAll('.concept-diagram-canvas');
+    canvases.forEach((canvas) => {
+        let svg = canvas.querySelector('svg');
+        if (!svg) {
+            return;
+        }
 
+        let stage = document.createElement('div');
+        stage.className = 'concept-diagram-stage';
+        canvas.appendChild(stage);
+        stage.appendChild(svg);
+
+        let state = {
+            scale: 1,
+            x: 0,
+            y: 0
+        };
+
+        let clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+        let getSvgSize = () => {
+            let width = parseFloat(svg.getAttribute('width'));
+            let height = parseFloat(svg.getAttribute('height'));
+            if (Number.isNaN(width) || Number.isNaN(height)) {
+                if (svg.viewBox && svg.viewBox.baseVal) {
+                    width = svg.viewBox.baseVal.width;
+                    height = svg.viewBox.baseVal.height;
+                }
+            }
+            return {width, height};
+        };
+
+        let applyTransform = () => {
+            stage.style.transform = `translate(${state.x}px, ${state.y}px) scale(${state.scale})`;
+        };
+
+        let fitToCanvas = () => {
+            let rect = canvas.getBoundingClientRect();
+            let size = getSvgSize();
+            if (!size.width || !size.height || !rect.width || !rect.height) {
+                applyTransform();
+                return;
+            }
+            let scale = Math.min(rect.width / size.width, rect.height / size.height, 1);
+            state.scale = scale;
+            state.x = (rect.width - size.width * scale) / 2;
+            state.y = (rect.height - size.height * scale) / 2;
+            applyTransform();
+        };
+
+        fitToCanvas();
+
+        let isPanning = false;
+        let hasMoved = false;
+        let startX = 0;
+        let startY = 0;
+        let originX = 0;
+        let originY = 0;
+
+        canvas.addEventListener('mousedown', (event) => {
+            if (event.button !== 0) {
+                return;
+            }
+            isPanning = true;
+            hasMoved = false;
+            startX = event.clientX;
+            startY = event.clientY;
+            originX = state.x;
+            originY = state.y;
+            canvas.classList.add('is-panning');
+        });
+
+        window.addEventListener('mousemove', (event) => {
+            if (!isPanning) {
+                return;
+            }
+            let dx = event.clientX - startX;
+            let dy = event.clientY - startY;
+            if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+                hasMoved = true;
+            }
+            state.x = originX + dx;
+            state.y = originY + dy;
+            applyTransform();
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (!isPanning) {
+                return;
+            }
+            isPanning = false;
+            canvas.classList.remove('is-panning');
+        });
+
+        canvas.addEventListener('click', (event) => {
+            if (hasMoved) {
+                event.preventDefault();
+                event.stopPropagation();
+                hasMoved = false;
+            }
+        });
+
+        canvas.addEventListener('wheel', (event) => {
+            event.preventDefault();
+            let rect = canvas.getBoundingClientRect();
+            let cx = event.clientX - rect.left;
+            let cy = event.clientY - rect.top;
+            let zoomFactor = event.deltaY > 0 ? 0.9 : 1.1;
+            let nextScale = clamp(state.scale * zoomFactor, 0.2, 3);
+            if (nextScale === state.scale) {
+                return;
+            }
+            let wx = (cx - state.x) / state.scale;
+            let wy = (cy - state.y) / state.scale;
+            state.scale = nextScale;
+            state.x = cx - wx * state.scale;
+            state.y = cy - wy * state.scale;
+            applyTransform();
+        }, { passive: false });
+    });
+}
 
 document.addEventListener('DOMContentLoaded', (event) => {
 Array.from(document.querySelectorAll('a')).concat(Array.from(document.querySelectorAll('em'))).forEach((a) => {
@@ -332,6 +450,7 @@ fetch(`https://api.github.com/repos/${window.appconfig.repo}/commits?path=${wind
 setupMathJax();
 setupHighlightJS();
 setupInheritanceToggle();
+setupConceptDiagramCanvas();
 if (!document.body.classList.contains('terms-and-definitions') && !document.body.classList.contains('cover')) {
     makeHeadersCollapsible();
 }
@@ -340,3 +459,53 @@ initialiseBackToTopButton();
 feather.replace();
 
 });
+
+function getCookie(name) {
+    var value = `; ${document.cookie}`;
+    var parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+}
+
+function filterActiveLanguage() {
+    const languageSlug = (getCookie('languagePreference') || 'english-default').trim().toLowerCase();
+    const aside = document.getElementById('translations-aside');
+  
+    const all = document.querySelectorAll('div.translation');
+    all.forEach(el => { el.style.display = 'none'; });
+  
+    const matches = document.querySelectorAll(`div.translation.lang-${languageSlug}`);
+  
+    const shouldHideAside = (languageSlug === 'english-default') || matches.length === 0;
+  
+    if (aside) aside.style.display = shouldHideAside ? 'none' : '';
+  
+    matches.forEach(el => { el.style.display = 'block'; });
+  }
+
+
+const USE_PAGE_RELOAD_FOR_LANGUAGE = false;
+
+document.addEventListener("DOMContentLoaded", () => {
+    const sel  = document.getElementById('language-selector');
+    const slug = (getCookie('languagePreference') || 'english-default').trim().toLowerCase();
+  
+    if (sel) sel.value = slug;   
+    if (!USE_PAGE_RELOAD_FOR_LANGUAGE) {
+      filterActiveLanguage();    
+    }
+  });
+
+function setLanguagePreference(value) {
+
+    var date = new Date();
+    date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000));  // Cookie expires in 30 days
+    var expires = "; expires=" + date.toUTCString();
+
+    document.cookie = `languagePreference=${value}${expires}; path=/;`;
+    if (USE_PAGE_RELOAD_FOR_LANGUAGE) {
+        window.location.reload();
+    } else {
+        filterActiveLanguage();
+    }
+}

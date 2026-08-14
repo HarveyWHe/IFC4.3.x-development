@@ -1,8 +1,9 @@
 # IfcDistributionChamberElementTypeEnum
 
 This enumeration identifies different types of distribution chambers.
+<!-- end of short definition -->
 
-> HISTORY  New enumeration in IFC2x2.
+> HISTORY New enumeration in IFC2x2.
 
 ## Items
 

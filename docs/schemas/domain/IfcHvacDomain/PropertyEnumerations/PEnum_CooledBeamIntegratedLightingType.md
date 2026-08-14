@@ -1,4 +1,5 @@
 # PEnum_CooledBeamIntegratedLightingType
+<!-- end of short definition -->
 
 ## Items
 
